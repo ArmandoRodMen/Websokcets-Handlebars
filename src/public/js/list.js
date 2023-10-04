@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   const socketClient = io();
+  const listContainer = document.getElementById("list");
 
-  const form = document.getElementById("listForm");
-  if (form) {
-    form.onsubmit = (e) => {
+  const addProductForm = document.getElementById("listForm");
+  if (addProductForm) {
+    addProductForm.onsubmit = (e) => {
       e.preventDefault();
 
       const newProduct = {
@@ -29,25 +30,27 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  socketClient.on("updateProducts", (updatedProductList) => {
-    const listContainer = document.getElementById("list");
-
-    listContainer.innerHTML = "<h3>Updated Product List</h3>";
-    updatedProductList.forEach((product) => {
-      listContainer.innerHTML += `<p>${product.name}: $${product.price} <button class="delete-button" data-product-id="${product.id}">Delete</button></p>`;
+  const renderProductList = (products) => {
+    listContainer.innerHTML = "<h3>Lista de Productos Actualizada</h3>";
+    products.forEach((product) => {
+      const productElement = document.createElement("p");
+      productElement.innerHTML = `${product.name}: $${product.price} <button class="delete-button" data-product-id="${product.id}">Eliminar</button>`;
+      listContainer.appendChild(productElement);
     });
+  };
 
-    listContainer.addEventListener("click", (event) => {
-      const target = event.target;
-      if (target.classList.contains("delete-button")) {
-        const productId = target.dataset.productId;
-        socketClient.emit("deleteProduct", productId);
-      }
-    });
+  listContainer.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target.classList.contains("delete-button")) {
+      const productId = target.dataset.productId;
+      socketClient.emit("deleteProduct", productId);
+    }
   });
+
+  socketClient.on("updateProducts", renderProductList);
 
   socketClient.on("message", (data) => {
     const messageContainer = document.getElementById("message");
-    messageContainer.innerHTML = `<h2>New Product: ${data.name} - $${data.price}</h2>`;
+    messageContainer.innerHTML = `<h2>Nuevo Producto: ${data.name} - $${data.price}</h2>`;
   });
 });
