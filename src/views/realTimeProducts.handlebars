@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Products</title>
+</head>
+
+<body>
+  <h2>Real-Time Products List</h2>
+  <ul>
+    {{#each products}}
+      <li>{{this.name}} - ${{this.price}}</li>
+    {{/each}}
+  </ul>
+
+  <!-- Your form for adding or deleting products -->
+  <form id="realTimeListForm">
+    <label for="realTimeProductName">Product:</label><br>
+    <input type="text" id="realTimeProductName" name="realTimeProductName"><br>
+    <label for="realTimeProductPrice">Price:</label><br>
+    <input type="number" id="realTimeProductPrice" name="realTimeProductPrice"><br><br>
+    <input type="submit" value="Add Product">
+  </form>
+<div id="list"></div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/list.js"></script>
+</body>
+
+</html>
