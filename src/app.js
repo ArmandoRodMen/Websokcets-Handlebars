@@ -30,13 +30,11 @@ const products = [];
 socketServer.on("connection", (socket) => {
     console.log(`Client connected: ${socket.id}`);
   
-    // Handle "message" event (adding a new product)
     socket.on("message", (newProduct) => {
       products.push(newProduct);
       socketServer.emit("updateProducts", products);
     });
   
-    // Handle "deleteProduct" event (deleting a product)
     socket.on("deleteProduct", (productId) => {
       const index = products.findIndex((product) => product.id === productId);
       if (index !== -1) {
